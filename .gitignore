@@ -1,0 +1,4 @@
+.upstream_cache/
+*.bak
+__pycache__/
+*.pyc
