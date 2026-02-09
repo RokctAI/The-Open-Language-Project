@@ -2,30 +2,39 @@ import sys
 import json
 import csv
 import os
+import glob
 
 TRANSLATIONS_DIR = "translations"
 
 def build(lang_code):
-    json_path = os.path.join(TRANSLATIONS_DIR, f"{lang_code}.json")
-    if not os.path.exists(json_path):
-        print(f"Error: Translation file not found at {json_path}")
+    lang_path = os.path.join(TRANSLATIONS_DIR, lang_code)
+    if not os.path.exists(lang_path):
+        print(f"Error: Translation directory not found at {lang_path}")
         sys.exit(1)
 
-    try:
-        with open(json_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-    except Exception as e:
-        print(f"Error reading {json_path}: {e}")
-        sys.exit(1)
+    # Find all .ro files in the language directory
+    ro_files = glob.glob(os.path.join(lang_path, "*.ro"))
+    if not ro_files:
+        print(f"No .ro files found in {lang_path}")
+        return
+
+    all_data = {}
+    for ro_file in ro_files:
+        try:
+            with open(ro_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                all_data.update(data)
+        except Exception as e:
+            print(f"Error reading {ro_file}: {e}")
 
     # Filter keys with non-empty values
     rows = []
-    for k, v in data.items():
+    for k, v in all_data.items():
         if v and v.strip():
             rows.append([k, v])
 
     if not rows:
-        print(f"No translations found in {json_path}")
+        print(f"No translations found in {lang_path}")
         return
 
     csv_path = f"{lang_code}.csv"
