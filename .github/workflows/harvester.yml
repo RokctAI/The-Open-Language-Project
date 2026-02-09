@@ -31,10 +31,10 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          if [[ -n $(git status -s master.ro) ]]; then
-            git add master.ro
-            git commit -m "🤖 Harvest: Updated master.ro with latest upstream strings"
+          if [[ -n $(git status -s translations/) ]]; then
+            git add translations/
+            git commit -m "🤖 Harvest: Updated translations with latest upstream keys"
             git push origin HEAD:${GITHUB_REF}
           else
-            echo "No changes to master.ro"
+            echo "No changes to translations/"
           fi
