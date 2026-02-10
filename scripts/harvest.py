@@ -3,6 +3,7 @@ import glob
 import json
 import requests
 import polib
+import re
 
 # Configuration
 GROUPS = {
@@ -24,6 +25,10 @@ def ensure_dirs():
         os.makedirs(UPSTREAM_CACHE_DIR)
     if not os.path.exists(TRANSLATIONS_DIR):
         os.makedirs(TRANSLATIONS_DIR)
+
+def is_valid_lang_code(code):
+    # Basic validation: 2-3 lowercase letters, optionally with a region (e.g., pt_BR)
+    return re.match(r"^[a-z]{2,3}(_[A-Z]{2})?$", code) is not None
 
 def harvest():
     ensure_dirs()
@@ -60,13 +65,16 @@ def harvest():
         print(f"Total unique keys for {filename}: {len(group_keys[filename])}")
 
     # 2. Update translation files in each language folder
-    # Find all language directories (subdirectories in translations/)
     if not os.path.exists(TRANSLATIONS_DIR):
          os.makedirs(TRANSLATIONS_DIR)
 
     lang_dirs = [d for d in os.listdir(TRANSLATIONS_DIR) if os.path.isdir(os.path.join(TRANSLATIONS_DIR, d))]
 
     for lang in lang_dirs:
+        if not is_valid_lang_code(lang):
+            print(f"Skipping invalid language folder: {lang}")
+            continue
+
         lang_path = os.path.join(TRANSLATIONS_DIR, lang)
         print(f"Processing language: {lang}")
 
