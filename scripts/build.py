@@ -6,6 +6,7 @@ import glob
 
 TRANSLATIONS_DIR = "translations"
 
+
 def build(lang_code):
     lang_path = os.path.join(TRANSLATIONS_DIR, lang_code)
     if not os.path.exists(lang_path):
@@ -47,6 +48,7 @@ def build(lang_code):
     except Exception as e:
         print(f"Error writing CSV: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
