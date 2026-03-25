@@ -20,15 +20,19 @@ GROUPS = {
 TRANSLATIONS_DIR = "translations"
 UPSTREAM_CACHE_DIR = ".upstream_cache"
 
+
 def ensure_dirs():
     if not os.path.exists(UPSTREAM_CACHE_DIR):
         os.makedirs(UPSTREAM_CACHE_DIR)
     if not os.path.exists(TRANSLATIONS_DIR):
         os.makedirs(TRANSLATIONS_DIR)
 
+
 def is_valid_lang_code(code):
-    # Basic validation: 2-3 lowercase letters, optionally with a region (e.g., pt_BR)
+    # Basic validation: 2-3 lowercase letters, optionally with a region (e.g.,
+    # pt_BR)
     return re.match(r"^[a-z]{2,3}(_[A-Z]{2})?$", code) is not None
+
 
 def harvest():
     ensure_dirs()
@@ -66,9 +70,13 @@ def harvest():
 
     # 2. Update translation files in each language folder
     if not os.path.exists(TRANSLATIONS_DIR):
-         os.makedirs(TRANSLATIONS_DIR)
+        os.makedirs(TRANSLATIONS_DIR)
 
-    lang_dirs = [d for d in os.listdir(TRANSLATIONS_DIR) if os.path.isdir(os.path.join(TRANSLATIONS_DIR, d))]
+    lang_dirs = [
+        d for d in os.listdir(TRANSLATIONS_DIR) if os.path.isdir(
+            os.path.join(
+                TRANSLATIONS_DIR,
+                d))]
 
     for lang in lang_dirs:
         if not is_valid_lang_code(lang):
@@ -100,9 +108,15 @@ def harvest():
             if modified:
                 print(f"  Updating {ro_filename}...")
                 with open(ro_path, 'w', encoding='utf-8') as f:
-                    json.dump(data, f, indent=4, ensure_ascii=False, sort_keys=True)
+                    json.dump(
+                        data,
+                        f,
+                        indent=4,
+                        ensure_ascii=False,
+                        sort_keys=True)
             else:
                 print(f"  No changes needed for {ro_filename}.")
+
 
 if __name__ == "__main__":
     harvest()
