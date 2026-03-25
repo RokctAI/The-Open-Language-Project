@@ -1,12 +1,12 @@
-# ROKCT Luvenda | Open Language Project
+# Open Language Project
 
-This project ("ROKCT Luvenda") aims to build a translation system for an AI-first ERP. It automatically harvests translation strings from major open-source projects into a simplified, grouped architecture for easy translation.
+This project aims to build a translation system for an AI-first ERP. It automatically harvests translation strings from major open-source projects into a simplified, grouped architecture for easy translation.
 
 ## Nature of the Project
 
-The ROKCT Luvenda Open Language Project is a specialized translation harvester and synchronization tool. Its primary goal is to provide high-quality localized translations for the ROKCT Luvenda ERP system by leveraging translation keys from established open-source ecosystems.
+The Open Language Project is a specialized translation harvester and synchronization tool. Its primary goal is to provide high-quality localized translations for an AI-first ERP system by leveraging translation keys from established open-source ecosystems.
 
-By aggregating keys from projects like Frappe, ERPNext, Django, and GNOME, this repository serves as a centralized bridge. It ensures that the ERP system has access to a broad range of common and domain-specific terms, which can then be translated into local languages (such as Tshivenda) to make the AI-first ERP more accessible.
+By aggregating keys from projects like Frappe, ERPNext, Django, and GNOME, this repository serves as a centralized bridge. It ensures that the ERP system has access to a broad range of common and domain-specific terms, which can then be translated into local languages (such as Tshivenda) to make the ERP more accessible.
 
 ## Repository Structure
 
@@ -28,7 +28,7 @@ The project uses a "Clean" and "Grouped" architecture, where translations are st
 
 ## How It Works
 
-This repository acts as an automated bridge between upstream open-source projects and the ROKCT Luvenda ERP's translation system.
+This repository acts as an automated bridge between upstream open-source projects and the ERP's translation system.
 
 1.  **Harvesting**: The `scripts/harvest.py` script fetches `.pot` and `.po` files from upstream sources:
     *   **Apps**: Frappe, ERPNext -> `apps.ro`
