@@ -7,8 +7,21 @@ import glob
 TRANSLATIONS_DIR = "translations"
 
 
+def safe_join(base, *paths):
+    base_abs = os.path.abspath(base)
+    joined_abs = os.path.abspath(os.path.join(base, *paths))
+    if not joined_abs.startswith(base_abs):
+        raise PermissionError("Path traversal attempt detected")
+    return joined_abs
+
+
 def build(lang_code):
-    lang_path = os.path.join(TRANSLATIONS_DIR, lang_code)
+    try:
+        lang_path = safe_join(TRANSLATIONS_DIR, lang_code)
+    except PermissionError as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
     if not os.path.exists(lang_path):
         print(f"Error: Translation directory not found at {lang_path}")
         sys.exit(1)

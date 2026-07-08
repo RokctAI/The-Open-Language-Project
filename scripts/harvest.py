@@ -4,6 +4,7 @@ import json
 import requests
 import polib
 import re
+import uuid
 
 # Configuration
 GROUPS = {
@@ -34,6 +35,14 @@ def is_valid_lang_code(code):
     return re.match(r"^[a-z]{2,3}(_[A-Z]{2})?$", code) is not None
 
 
+def safe_join(base, *paths):
+    base_abs = os.path.abspath(base)
+    joined_abs = os.path.abspath(os.path.join(base, *paths))
+    if not joined_abs.startswith(base_abs):
+        raise PermissionError("Path traversal attempt detected")
+    return joined_abs
+
+
 def harvest():
     ensure_dirs()
 
@@ -47,11 +56,12 @@ def harvest():
         for url in urls:
             try:
                 print(f"Fetching {url} for {filename}...")
-                response = requests.get(url, timeout=30)
+                headers = {"X-Request-ID": str(uuid.uuid4())}
+                response = requests.get(url, headers=headers, timeout=30)
                 response.raise_for_status()
 
                 # Save temporarily for polib
-                temp_filename = os.path.join(UPSTREAM_CACHE_DIR, "temp.po")
+                temp_filename = safe_join(UPSTREAM_CACHE_DIR, "temp.po")
                 with open(temp_filename, "wb") as f:
                     f.write(response.content)
 
@@ -83,11 +93,19 @@ def harvest():
             print(f"Skipping invalid language folder: {lang}")
             continue
 
-        lang_path = os.path.join(TRANSLATIONS_DIR, lang)
+        try:
+            lang_path = safe_join(TRANSLATIONS_DIR, lang)
+        except PermissionError as e:
+            print(f"Error: {e}")
+            continue
         print(f"Processing language: {lang}")
 
         for ro_filename, keys in group_keys.items():
-            ro_path = os.path.join(lang_path, ro_filename)
+            try:
+                ro_path = safe_join(lang_path, ro_filename)
+            except PermissionError as e:
+                print(f"Error: {e}")
+                continue
 
             # Load existing data or create new
             try:
